@@ -1,0 +1,15 @@
+[theme]
+
+# Primary Accent Color
+primaryColor = "#d33682"
+
+# Background Colors
+backgroundColor = "#002b36"
+secondaryBackgroundColor = "#586e75"
+
+# Text Style
+textColor = "#fafafa"
+
+# Font Family
+# Default: "sans serif"
+font = "sans serif"
