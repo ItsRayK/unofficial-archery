@@ -5,6 +5,7 @@
 from pathlib import Path
 import streamlit as st
 import base64
+import time
 
 #-------------------#
 #       Setup       #
@@ -23,8 +24,8 @@ def get_range_name():
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
 
 ### Apply Custom CSS
-with open(CSS_FILE) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+#with open(CSS_FILE) as f:
+#    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 #-------------------#
 #   Session State   #
@@ -35,26 +36,6 @@ if 'last_command' not in st.session_state:
 if 'is_range_buzzer_enabled' not in st.session_state:
     st.session_state['is_range_buzzer_enabled'] = False
 
-
-#-------------------#
-#   Page Elements   #
-#-------------------#
-
-st.markdown("#")
-st.markdown("#")
-st.markdown("#")
-
-#col1_1, col1_2, col1_3, col1_4 = st.columns(4)
-
-command_text_placeholder = st.empty()
-
-st.markdown("#")
-st.markdown("#")
-st.markdown("#")
-
-## Setup Two Column Layout
-col2_1, col2_2, col2_3, col2_4 = st.columns(4)
-col3_1, col3_2, col3_3, col3_4 = st.columns(4)
 
 #-------------------#
 #    Setup Assets   #
@@ -79,45 +60,75 @@ def play_buzzer(num_times = 1):
                 </audio>
                 """
             col3_1.markdown(md, unsafe_allow_html=True)
+            time.sleep(num_times)
+
+#-------------------#
+#   Page Elements   #
+#-------------------#
+
+online_text = "<center style='text-align: center; font-size: 12em; color: #cf7c11'>ON LINE</center>"
+begin_text = "<center style='text-align: center; font-size: 12em; color: #0cc93f'>BEGIN</center>"
+clear_text = "<center style='text-align: center; font-size: 12em; color: #2695d1'>CLEAR</center>"
+hold_text = "<center style='text-align: center; font-size: 12em; color: #c94b0c'>HOLD</center>"
+
+st.header("Range Commands")
+
+st.text("")
+st.text("")
+
+if st.session_state['last_command'] == "ON LINE":
+    command_text_placeholder = st.markdown(f"{online_text}", unsafe_allow_html=True)
+
+elif st.session_state['last_command'] == "BEGIN":
+    command_text_placeholder = st.markdown(f"{begin_text}", unsafe_allow_html=True)
+
+elif st.session_state['last_command'] == "CLEAR":
+    command_text_placeholder = st.markdown(f"{clear_text}", unsafe_allow_html=True)
+
+else:
+    command_text_placeholder = st.markdown(f"{hold_text}", unsafe_allow_html=True)
+
+st.text("")
+st.text("")
+st.text("")
+st.text("")
+st.text("")
+st.text("")
+
+## Setup Two Column Layout
+col2_1, col2_2, col2_3, col2_4 = st.columns(4)
+col3_1, col3_2, col3_3, col3_4 = st.columns(4)
 
 #-------------------#
 #     Core Logic    #
 #-------------------#
 
-if st.session_state['last_command'] == 'ON LINE':
-    play_buzzer(2)
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #cf7c11'>ON LINE</center>", unsafe_allow_html=True)
-
-elif st.session_state['last_command'] == 'BEGIN':
-    play_buzzer(1)
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #0cc93f'>BEGIN</center>", unsafe_allow_html=True)
-
-elif st.session_state['last_command'] == 'CLEAR':
-    play_buzzer(3)
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #2695d1'>CLEAR</center>", unsafe_allow_html=True)
-
-else:
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #c94b0c'>HOLD</center>", unsafe_allow_html=True)
-
-
 if col2_1.button("ON LINE", use_container_width=True):
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #cf7c11'>ON LINE</center>", unsafe_allow_html=True)
+    command_text_placeholder.markdown(f"{online_text}", unsafe_allow_html=True)
     st.session_state['last_command'] = 'ON LINE'
+    play_buzzer(2)
+    st.rerun()
 
 if col2_2.button("BEGIN", use_container_width=True):
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #0cc93f'>BEGIN</center>", unsafe_allow_html=True)
+    command_text_placeholder.markdown(f"{begin_text}", unsafe_allow_html=True)
     st.session_state['last_command'] = 'BEGIN'
+    play_buzzer(1)
+    st.rerun()
 
 if col2_3.button("CLEAR", use_container_width=True):
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #2695d1'>CLEAR</center>", unsafe_allow_html=True)
+    command_text_placeholder.markdown(f"{clear_text}", unsafe_allow_html=True)
     st.session_state['last_command'] = 'CLEAR'
+    play_buzzer(3)
+    st.rerun()
 
 if col2_4.button("HOLD", use_container_width=True, type="primary"):
-    command_text_placeholder.markdown(f"<center style='text-align: center; font-size: 12em; color: #c94b0c'>HOLD</center>", unsafe_allow_html=True)
+    command_text_placeholder.markdown(f"{hold_text}", unsafe_allow_html=True)
     st.session_state['last_command'] = 'HOLD'
 
-buzzer_text_placeholder = col3_4.empty()
+col3_3.text("")
+col3_4.text("")
 buzzer_enable_placeholder = col3_4.empty()
+buzzer_text_placeholder = col3_4.empty()
 
 if st.session_state['is_range_buzzer_enabled']:
     buzzer_text_placeholder.write(f"Buzzer: Enabled")
@@ -131,5 +142,14 @@ if buzzer_enable_placeholder.button("Toggle Buzzer", use_container_width=True):
         st.session_state['is_range_buzzer_enabled'] = True
     st.rerun()
 
+css = '''
+<style>
+section.main > div:has(~ footer ) {
+    padding-bottom: 5px;
+}
+</style>
+'''
+st.markdown(css, unsafe_allow_html=True)
+
 ###################### DEBUG ################
-#st.session_state
+# st.session_state

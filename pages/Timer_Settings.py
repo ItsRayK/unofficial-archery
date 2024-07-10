@@ -23,8 +23,8 @@ def get_range_name():
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
 
 ### Apply Custom CSS
-with open(CSS_FILE) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+#with open(CSS_FILE) as f:
+#    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 #-------------------#
 #   Session State   #
@@ -82,13 +82,16 @@ if 'last_phase' not in st.session_state:
 #   Page Elements   #
 #-------------------#
 
-st.title("Timer Settings")
+st.header("Timer Settings 🔧")
+
+st.markdown(f"<span style='color: #c9b30c'>Don't use your browser's refresh/forward/back buttons while using this webapp. It will reset your session and clear all the settings.</span>", unsafe_allow_html=True)
+st.markdown(f"<span style='color: #c9b30c'>Make sure you hit 'Apply' before leaving this page.</span>", unsafe_allow_html=True)
 
 ## Setup Two Column Layout
 col1, col2 = st.columns(2)
 
 ## Column 1 Elements
-num_practice_ends = col1.number_input("# Practice Ends", min_value=0, value=st.session_state['num_practice_ends'], step=1, format="%d")
+num_practice_ends = col1.number_input("# Practice Ends (this currently does nothing)", min_value=0, value=st.session_state['num_practice_ends'], step=1, format="%d")
 setup_time = col1.number_input("Setup Time (Seconds)", min_value=0, value=st.session_state['setup_time'], step=1, format="%d")
 
 use_warning_color = col1.checkbox("Enable 'Warning' Color", value=st.session_state['use_warning_color'])

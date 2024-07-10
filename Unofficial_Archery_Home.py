@@ -83,11 +83,32 @@ if 'last_phase' not in st.session_state:
 
 # Display Header
 RANGE_NAME = get_range_name()
-st.header(f"Welcome to {RANGE_NAME}!", anchor=False)
+st.header(f"Welcome to {RANGE_NAME}! 🎯", anchor=False)
 
 # About Text
 st.markdown('''
-    I'm doing my best to make this as easy to use as possible, so bare with me.
-    
-    Note: Until I figure it out, ***don't use the refresh button*** on your browser.
+            ### About
+            Unofficial Archery is exactly that! Your own unofficial archery range! ***Spin up a range wherever you are!*** (or rather, wherever you have an internet connection)
+            
+            *(Disclaimer: Yes, you can be an official range owner and still use this app to run your range if you want)*
+            
+            ### Features
+            - **Range Commands**
+                - **Commands**: On Line, Begin, Clear, Hold
+                - **Buzzer**: Can be enabled for audible commands *(disabled by default)*
+            - **Scoring Timer**
+                - **Configurable**: Configure it to your liking under the "Timer Settings" page
+                - **Buzzer Cues**: The buzzer sounds twice at the beginning for setup, once to begin shooting, and three times to signal the end *(can be disabled)*
+                - **Double Line**: Enable the double line feature if your range is so popular that you don't have enough space *(disabled by default)*
+            
+            ### Work In Progress
+            Yup, this project is still a work in progress. If you encounter bugs, don't tell me about them, my ego is fragile (lol jk, ik there are bugs).
+
+            There are still a handful of features missing that I'm working on.
+            
+            Here's the list:
+            - Alternate 'A' and 'B' line for even and odd ends if double line is enabled
+            - Add 'Practice End' functionality
+            - Add button to skip the rest of the timer and go to the next scoring phase
+            - Add keyboard shortcuts for range and timer controls
 ''')

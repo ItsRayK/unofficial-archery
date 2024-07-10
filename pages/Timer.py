@@ -24,8 +24,8 @@ def get_range_name():
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
 
 ### Apply Custom CSS
-with open(CSS_FILE) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+#with open(CSS_FILE) as f:
+#    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 #-------------------#
 #   Session State   #
@@ -82,14 +82,25 @@ if 'last_phase' not in st.session_state:
 #-------------------#
 #   Page Elements   #
 #-------------------#
+
+## Styles/Colors
+style_small_default = "<center style='text-align: center; font-size: 3.5em;'>"
+
+timer_style_default = "<center style='text-align: center; font-size: 15em;'>"
+timer_style_green = "<center style='text-align: center; font-size: 15em; color: #0cc93f'>"
+timer_style_warning = "<center style='text-align: center; font-size: 15em; color: #c9b30c'>"
+timer_style_urgent = "<center style='text-align: center; font-size: 15em; color: #c94b0c'>"
+
+end_center_style = "</center>"
+
 ## Setup Three Column Layout
 col1_1, col1_2, col1_3= st.columns(3)
 
 line_placeholder = col1_1.empty()
 end_number_placeholder = col1_3.empty()
 
-line_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>Line: {st.session_state['current_line']}</center>", unsafe_allow_html=True)
-end_number_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}</center>", unsafe_allow_html=True)
+line_placeholder.markdown(f"{style_small_default}Line: {st.session_state['current_line']}{end_center_style}", unsafe_allow_html=True)
+end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
 
 ## Outside Of Columns
 time_placeholder = st.empty()
@@ -126,78 +137,91 @@ def play_buzzer(num_times = 1):
                 </audio>
                 """
             col2_1.markdown(md, unsafe_allow_html=True)
+            col2_1.markdown("", unsafe_allow_html=True)
 
 
 #-------------------#
 #     Core Logic    #
 #-------------------#
 if st.session_state['last_phase'] == 'SETUP':
-    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em;'>{time.strftime('%M:%S', time.gmtime(st.session_state['last_setup_time']))}</center>", unsafe_allow_html=True)
+    time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(st.session_state['last_setup_time']))}{end_center_style}", unsafe_allow_html=True)
 elif st.session_state['last_phase'] == 'SHOOT':
-    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em'>{time.strftime('%M:%S', time.gmtime(st.session_state['last_shooting_time']))}</center>", unsafe_allow_html=True)
+    time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(st.session_state['last_shooting_time']))}{end_center_style}", unsafe_allow_html=True)
 else:
-    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em'>00:00</center>", unsafe_allow_html=True)
+    time_placeholder.markdown(f"{timer_style_default}00:00{end_center_style}", unsafe_allow_html=True)
 
-phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>HOLD</center>", unsafe_allow_html=True)
+phase_placeholder.markdown(f"{style_small_default}HOLD{end_center_style}", unsafe_allow_html=True)
 
 def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_line, current_end, double_line=False):
     phase = current_phase
 
+    # Reinitialize values on Start/Stop based on last known state
     if phase == 'SETUP':
         play_buzzer(2)
-        phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>{phase}</center>", unsafe_allow_html=True)
+        phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_setup_time_sec
     elif phase == 'SHOOT':
         play_buzzer(1)
-        phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>{phase}</center>", unsafe_allow_html=True)
+        phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_shot_time_sec
     else:
         display_timer = 0
 
+    # Non-blocking timer loop
     while( True ):
-        phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>{phase}</center>", unsafe_allow_html=True)
+        phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         
+        # Logic if in SETUP PHASE
         if phase == 'SETUP':
 
-            st.session_state['last_phase'] = phase
+            st.session_state['last_phase'] = phase # Save/Update the last known phase (SETUP)
 
-            time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #cf7c11'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+            time_placeholder.markdown(f"{timer_style_warning}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
 
-            if display_timer == 0:
+            # When the phase is complete (time == 0)
+            if display_timer <= 0:
                 phase = 'SHOOT'
                 display_timer = st.session_state['shooting_time']
                 play_buzzer(1)
             else:
                 st.session_state['last_setup_time'] = display_timer - 1
-                display_timer -= 1
+                #display_timer -= 1
 
+        # Logic if in SHOOT PHASE
         elif phase == 'SHOOT':
-            st.session_state['last_phase'] = phase
 
-            # Timer Colors
+            st.session_state['last_phase'] = phase # Save/Update the last known phase (SHOOT)
+
+            ## Timer Colors
+
+            # If both URGENT and WARNING colors are enabled
             if st.session_state['use_urgent_color'] and st.session_state['use_warning_color']:
                 if display_timer <= st.session_state['low_time_urgent']:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #c94b0c'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_urgent}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
                 elif display_timer <= st.session_state['low_time_warning']:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #c9b30c'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_warning}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
                 else:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #0cc93f'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_green}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
 
+            # If only URGENT color is enabled
             elif st.session_state['use_urgent_color'] and not st.session_state['use_warning_color']:
                 if display_timer <= st.session_state['low_time_urgent']:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #c94b0c'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_urgent}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
                 else:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #099c0e'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_green}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
             
+            # If only WARNING color is enabled
             elif not st.session_state['use_urgent_color'] and st.session_state['use_warning_color']:
                 if display_timer <= st.session_state['low_time_warning']:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #c9b30c'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_warning}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
                 else:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #0cc93f'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_green}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
             
+            # If no colors are enabled
             else:
-                    time_placeholder.markdown(f"<center style='text-align: center; font-size: 15em; color: #0cc93f'>{time.strftime('%M:%S', time.gmtime(display_timer))}</center>", unsafe_allow_html=True)
+                    time_placeholder.markdown(f"{timer_style_green}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
 
+            # When the phase is complete (time == 0)
             if display_timer <= 0:
                 phase = 'HOLD'
                 st.session_state['last_phase'] = phase
@@ -209,7 +233,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         play_buzzer(2)
 
                         st.session_state['current_line'] = current_line
-                        line_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>Line: {current_line}</center>", unsafe_allow_html=True)
+                        line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
 
                         phase = 'SETUP'
                         st.session_state['last_phase'] = phase
@@ -217,42 +241,50 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 
                     else:
                         play_buzzer(3)
-                        phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>{phase}</center>", unsafe_allow_html=True)
+
+                        phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
                         current_line = 'A'
                         st.session_state['current_line'] = current_line
-                        line_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>Line: {current_line}</center>", unsafe_allow_html=True)
-
+                        
                         st.session_state['current_end'] += 1
-                        end_number_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}</center>", unsafe_allow_html=True)
 
                         st.session_state['last_phase'] = 'SETUP'
 
                         st.session_state['last_setup_time'] = st.session_state['setup_time']
                         st.session_state['last_shooting_time'] = st.session_state['shooting_time']
-
+                                               
+                        time.sleep(5)
+                        line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
+                        end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
+                        
                         st.session_state['timer_active'] = False
-                        break
+                        st.rerun()
+                        #break
                 else:
                         play_buzzer(3)
-                        phase_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em;'>{phase}</center>", unsafe_allow_html=True)
+
+                        phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
                         current_line = 'A'
                         st.session_state['current_line'] = current_line
-                        line_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>Line: {current_line}</center>", unsafe_allow_html=True)
-
+                        
                         st.session_state['current_end'] += 1
-                        end_number_placeholder.markdown(f"<center style='text-align: center; font-size: 3.5em'>End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}</center>", unsafe_allow_html=True)
-
+                        
                         st.session_state['last_phase'] = 'SETUP'
 
                         st.session_state['last_setup_time'] = st.session_state['setup_time']
                         st.session_state['last_shooting_time'] = st.session_state['shooting_time']
+                     
+                        time.sleep(5)
+                        line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
+                        end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
 
                         st.session_state['timer_active'] = False
-                        break
+                        st.rerun()
+                        #break
             else:
                 st.session_state['last_shooting_time'] = display_timer - 1
-                display_timer -= 1
-
+        
+        display_timer -= 1
         time.sleep(1)
         
 
@@ -263,5 +295,13 @@ if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     else:
         st.session_state['timer_active'] = False
 
+css = '''
+<style>
+section.main > div:has(~ footer ) {
+    padding-bottom: 5px;
+}
+</style>
+'''
+st.markdown(css, unsafe_allow_html=True)
 ###################### DEBUG ################
 #st.session_state
