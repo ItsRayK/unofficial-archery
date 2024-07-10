@@ -107,6 +107,7 @@ st.markdown('''
             There are still a handful of features missing that I'm working on.
             
             Here's the list:
+            - Make it 'mobile' friendly (it's a disaster rn oops lol)
             - Alternate 'A' and 'B' line for even and odd ends if double line is enabled
             - Add 'Practice End' functionality
             - Add button to skip the rest of the timer and go to the next scoring phase
