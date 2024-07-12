@@ -132,7 +132,6 @@ def play_buzzer(num_times = 1):
                 </audio>
                 """
             col2_1.markdown(md, unsafe_allow_html=True)
-            #col2_1.markdown("", unsafe_allow_html=True)
 
 
 #-------------------#
