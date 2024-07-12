@@ -13,11 +13,6 @@ THIS_DIR = Path(__file__).parent
 CSS_FILE = THIS_DIR / "style" / "style.css"
 ASSETS = THIS_DIR / "assets"
 
-### Function to get query parameters
-def get_range_name():
-    query_params = st.experimental_get_query_params()
-    return query_params.get("range", ["Unofficial Archery"])[0]
-
 ### Page Configuration
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
 
@@ -82,7 +77,7 @@ if 'last_phase' not in st.session_state:
 #-------------------#
 
 # Display Header
-RANGE_NAME = get_range_name()
+RANGE_NAME = "Unofficial Archery"
 st.header(f"Welcome to {RANGE_NAME}! 🎯", anchor=False)
 
 # About Text
@@ -107,7 +102,7 @@ st.markdown('''
             There are still a handful of features missing that I'm working on.
             
             Here's the list:
-            - Make it 'mobile' friendly (it's a disaster rn oops lol)
+            - ~Make it 'mobile' friendly (it's a disaster rn oops lol)~
             - Alternate 'A' and 'B' line for even and odd ends if double line is enabled
             - Add 'Practice End' functionality
             - Add button to skip the rest of the timer and go to the next scoring phase

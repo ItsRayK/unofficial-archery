@@ -15,13 +15,8 @@ THIS_DIR = Path(__file__).parent
 CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
-### Function to get query parameters
-def get_range_name():
-    query_params = st.experimental_get_query_params()
-    return query_params.get("range", ["Unofficial Archery"])[0]
-
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide')
 
 ### Apply Custom CSS
 #with open(CSS_FILE) as f:
@@ -84,12 +79,12 @@ if 'last_phase' not in st.session_state:
 #-------------------#
 
 ## Styles/Colors
-style_small_default = "<center style='text-align: center; font-size: 3.5em;'>"
+style_small_default = "<center style='text-align: center; font-size: 2.5vmax;'>"
 
-timer_style_default = "<center style='text-align: center; font-size: 15em;'>"
-timer_style_green = "<center style='text-align: center; font-size: 15em; color: #0cc93f'>"
-timer_style_warning = "<center style='text-align: center; font-size: 15em; color: #c9b30c'>"
-timer_style_urgent = "<center style='text-align: center; font-size: 15em; color: #c94b0c'>"
+timer_style_default = "<center style='text-align: center; font-size: 15vmax;'>"
+timer_style_green = "<center style='text-align: center; font-size: 15vmax; color: #0cc93f'>"
+timer_style_warning = "<center style='text-align: center; font-size: 15vmax; color: #c9b30c'>"
+timer_style_urgent = "<center style='text-align: center; font-size: 15vmax; color: #c94b0c'>"
 
 end_center_style = "</center>"
 
@@ -137,7 +132,7 @@ def play_buzzer(num_times = 1):
                 </audio>
                 """
             col2_1.markdown(md, unsafe_allow_html=True)
-            col2_1.markdown("", unsafe_allow_html=True)
+            #col2_1.markdown("", unsafe_allow_html=True)
 
 
 #-------------------#
@@ -295,13 +290,5 @@ if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     else:
         st.session_state['timer_active'] = False
 
-css = '''
-<style>
-section.main > div:has(~ footer ) {
-    padding-bottom: 5px;
-}
-</style>
-'''
-st.markdown(css, unsafe_allow_html=True)
 ###################### DEBUG ################
 #st.session_state

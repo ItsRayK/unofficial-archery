@@ -14,11 +14,6 @@ THIS_DIR = Path(__file__).parent
 CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
-### Function to get query parameters
-def get_range_name():
-    query_params = st.experimental_get_query_params()
-    return query_params.get("range", ["Unofficial Archery"])[0]
-
 ### Page Configuration
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
 
