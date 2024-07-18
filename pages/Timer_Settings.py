@@ -51,6 +51,9 @@ if 'num_scoring_ends' not in st.session_state:
 if 'is_double_line' not in st.session_state:
     st.session_state['is_double_line'] = False
 
+if 'alternate_line' not in st.session_state:
+    st.session_state['alternate_line'] = False
+
 if 'current_line' not in st.session_state:
     st.session_state['current_line'] = 'A'
 
@@ -94,6 +97,11 @@ low_time_warning = col1.number_input("Time at which to display 'Warning' color:"
 
 is_double_line = col1.checkbox("Double Line", value=st.session_state['is_double_line'])
 
+if is_double_line:
+    alternate_line = col1.checkbox("Alternate A/B Start", value=st.session_state['alternate_line'])
+else:
+    alternate_line = False
+
 is_buzzer_enabled = col1.checkbox("Enable Buzzer", value=st.session_state['is_buzzer_enabled'])
 
 ## Column 2 Elements
@@ -123,6 +131,7 @@ if col1.button("Apply"):
 
     # Save Flags
     st.session_state['is_double_line'] = is_double_line
+    st.session_state['alternate_line'] = alternate_line
 
     st.session_state['use_warning_color'] = use_warning_color
     st.session_state['use_urgent_color'] = use_urgent_color

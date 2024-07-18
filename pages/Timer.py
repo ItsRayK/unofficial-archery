@@ -52,6 +52,9 @@ if 'num_scoring_ends' not in st.session_state:
 if 'is_double_line' not in st.session_state:
     st.session_state['is_double_line'] = False
 
+if 'alternate_line' not in st.session_state:
+    st.session_state['alternate_line'] = False
+
 if 'current_line' not in st.session_state:
     st.session_state['current_line'] = 'A'
 
@@ -146,7 +149,7 @@ else:
 
 phase_placeholder.markdown(f"{style_small_default}HOLD{end_center_style}", unsafe_allow_html=True)
 
-def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_line, current_end, double_line=False):
+def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_line):
     phase = current_phase
 
     # Reinitialize values on Start/Stop based on last known state
@@ -165,6 +168,17 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
     while( True ):
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         
+        if st.session_state['alternate_line']:
+            if st.session_state['current_end'] % 2 == 1:
+                starting_line = 'A'
+                next_line = 'B'
+            else:
+                starting_line = 'B'
+                next_line = 'A'
+        else:
+            starting_line = 'A'
+            next_line = 'B'
+
         # Logic if in SETUP PHASE
         if phase == 'SETUP':
 
@@ -221,8 +235,9 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                 st.session_state['last_phase'] = phase
 
                 if st.session_state['is_double_line']:
-                    if current_line == 'A':
-                        current_line = 'B'
+
+                    if current_line == starting_line:
+                        current_line = next_line
                         
                         play_buzzer(2)
 
@@ -237,7 +252,10 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         play_buzzer(3)
 
                         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
-                        current_line = 'A'
+                        if st.session_state['alternate_line']:
+                            current_line = next_line
+                        else:
+                            current_line = 'A'
                         st.session_state['current_line'] = current_line
                         
                         st.session_state['current_end'] += 1
@@ -285,7 +303,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     if st.session_state['timer_active'] == False:
         st.session_state['timer_active'] = True
-        run_timer(st.session_state['last_setup_time'], st.session_state['last_shooting_time'], st.session_state['last_phase'], st.session_state['current_line'], st.session_state['current_end'], st.session_state['is_double_line'])
+        run_timer(st.session_state['last_setup_time'], st.session_state['last_shooting_time'], st.session_state['last_phase'], st.session_state['current_line'])
     else:
         st.session_state['timer_active'] = False
 
