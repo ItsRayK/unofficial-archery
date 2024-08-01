@@ -4,6 +4,7 @@
 
 from pathlib import Path
 import streamlit as st
+from streamlit_shortcuts import add_keyboard_shortcuts
 import time
 import base64
 
@@ -109,14 +110,19 @@ st.markdown('##') # Spacer
 ## Setup Next Set of Columns
 col2_1, col2_2, col2_3= st.columns(3)
 timer_controls_placeholder = col2_2.empty()
-
+buzzer_audio_placeholder = col2_2.empty()
 ### End General Layout
 
 #-------------------#
 #    Setup Assets   #
 #-------------------#
 
-def play_buzzer(num_times = 1):
+def clear_buzzer(element):
+    element.empty()
+
+def play_buzzer(element, num_times = 1):
+    clear_buzzer(element)
+
     if st.session_state['is_buzzer_enabled']:
         if num_times == 2:
             buzzer_audio_file = ASSETS / "audio" / "buzzer2.mp3"
@@ -134,8 +140,7 @@ def play_buzzer(num_times = 1):
                 <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
                 </audio>
                 """
-            col2_1.markdown(md, unsafe_allow_html=True)
-
+            element.markdown(md, unsafe_allow_html=True)
 
 #-------------------#
 #     Core Logic    #
@@ -154,11 +159,11 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 
     # Reinitialize values on Start/Stop based on last known state
     if phase == 'SETUP':
-        play_buzzer(2)
+        play_buzzer(buzzer_audio_placeholder, 2)
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_setup_time_sec
     elif phase == 'SHOOT':
-        play_buzzer(1)
+        play_buzzer(buzzer_audio_placeholder, 1)
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_shot_time_sec
     else:
@@ -190,7 +195,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
             if display_timer <= 0:
                 phase = 'SHOOT'
                 display_timer = st.session_state['shooting_time']
-                play_buzzer(1)
+                play_buzzer(buzzer_audio_placeholder, 1)
             else:
                 st.session_state['last_setup_time'] = display_timer - 1
                 #display_timer -= 1
@@ -238,9 +243,9 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 
                     if current_line == starting_line:
                         current_line = next_line
-                        
-                        play_buzzer(2)
 
+                        play_buzzer(buzzer_audio_placeholder, 2)
+                    
                         st.session_state['current_line'] = current_line
                         line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
 
@@ -249,7 +254,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         display_timer = st.session_state['setup_time']
 
                     else:
-                        play_buzzer(3)
+                        play_buzzer(buzzer_audio_placeholder, 3)
 
                         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
                         if st.session_state['alternate_line']:
@@ -273,7 +278,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         st.rerun()
                         #break
                 else:
-                        play_buzzer(3)
+                        play_buzzer(buzzer_audio_placeholder, 3)
 
                         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
                         current_line = 'A'
@@ -306,6 +311,10 @@ if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
         run_timer(st.session_state['last_setup_time'], st.session_state['last_shooting_time'], st.session_state['last_phase'], st.session_state['current_line'])
     else:
         st.session_state['timer_active'] = False
+
+add_keyboard_shortcuts({
+    's': 'Start/Stop'
+})
 
 ###################### DEBUG ################
 #st.session_state

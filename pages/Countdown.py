@@ -4,6 +4,7 @@
 
 from pathlib import Path
 import streamlit as st
+from streamlit_shortcuts import add_keyboard_shortcuts
 import time
 import base64
 
@@ -159,6 +160,10 @@ if countdown_controls_placeholder.button("Start/Stop", use_container_width=True)
         run_timer(st.session_state['last_countdown_time'])
     else:
         st.session_state['countdown_active'] = False
+
+add_keyboard_shortcuts({
+    's': 'Start/Stop'
+})
 
 ###################### DEBUG ################
 #st.session_state

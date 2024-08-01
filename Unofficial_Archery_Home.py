@@ -91,12 +91,15 @@ st.markdown('''
             - **Range Commands**
                 - **Commands**: On Line, Begin, Clear, Hold
                 - **Buzzer**: Can be enabled for audible commands *(disabled by default)*
+                - **Hotkeys**: Control the range with just a keyboard *(Keys for the range: 1 = ON LINE | 2 = BEGIN | 3 = SHOOT | 4 = HOLD)*
             - **Scoring Timer**
                 - **Configurable**: Configure it to your liking under the "Timer Settings" page
                 - **Buzzer Cues**: The buzzer sounds twice at the beginning for setup, once to begin shooting, and three times to signal the end *(can be disabled)*
                 - **Double Line**: Enable the double line feature if your range is so popular that you don't have enough space *(disabled by default)*
+                - **Hotkeys**: Start/Stop the timer with just a keyboard *(Keys for timer: S = Start/Stop)*
             - **Countdown**
                 - **Configurable**: Configure the time, title, and end text for whatever you need (i.e. event starting countdown, warm-up timer, etc.)
+                - **Hotkeys**: Start/Stop the timer with just a keyboard *(Keys for timer: S = Start/Stop)*
             
             ### Work In Progress
             Yup, this project is still a work in progress. If you encounter bugs, don't tell me about them, my ego is fragile (lol jk, ik there are bugs).
@@ -108,5 +111,5 @@ st.markdown('''
             - ~Alternate 'A' and 'B' line for even and odd ends if double line is enabled~
             - Add 'Practice End' functionality
             - Add button to skip the rest of the timer and go to the next scoring phase
-            - Add keyboard shortcuts for range and timer controls
+            - ~Add keyboard shortcuts for range and timer controls~
 ''')

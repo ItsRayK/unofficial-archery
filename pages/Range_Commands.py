@@ -4,6 +4,7 @@
 
 from pathlib import Path
 import streamlit as st
+from streamlit_shortcuts import add_keyboard_shortcuts
 import base64
 import time
 
@@ -119,21 +120,39 @@ if col1_2.button("HOLD", use_container_width=True, type="primary"):
     command_text_placeholder.markdown(f"{hold_text}", unsafe_allow_html=True)
     st.session_state['last_command'] = 'HOLD'
 
+add_keyboard_shortcuts({
+    '1': 'ON LINE',
+    '2': 'BEGIN',
+    '3': 'CLEAR',
+    '4': 'HOLD'
+})
+
 col3_3.text("")
 col3_4.text("")
-buzzer_enable_placeholder = col1_2.empty()
 buzzer_text_placeholder = col1_2.empty()
+settings_popover = col1_2.empty()
 
 if st.session_state['is_range_buzzer_enabled']:
     buzzer_text_placeholder.write(f"Buzzer: Enabled")
 else:
     buzzer_text_placeholder.write(f"Buzzer: Disabled")
 
-if buzzer_enable_placeholder.button("Toggle Buzzer", use_container_width=True):
-    if st.session_state['is_range_buzzer_enabled']:
-        st.session_state['is_range_buzzer_enabled'] = False
-    else:
-        st.session_state['is_range_buzzer_enabled'] = True
-    st.rerun()
+with settings_popover.popover("Settings/Hotkeys", use_container_width=True):
+    if st.button("Toggle Buzzer", use_container_width=True):
+        if st.session_state['is_range_buzzer_enabled']:
+            st.session_state['is_range_buzzer_enabled'] = False
+        else:
+            st.session_state['is_range_buzzer_enabled'] = True
+        st.rerun()
+
+    st.markdown('''
+        #### Hotkeys
+        | Key | Range Command |
+        | --- | ------------- |
+        | 1 | On Line |       
+        | 2 | Begin |
+        | 3 | Clear |
+        | 4 | Hold |
+    ''')
 ###################### DEBUG ################
 # st.session_state
