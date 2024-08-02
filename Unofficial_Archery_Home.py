@@ -4,6 +4,7 @@
 
 from pathlib import Path
 import streamlit as st
+import base64
 
 #-------------------#
 #       Setup       #
@@ -13,64 +14,29 @@ THIS_DIR = Path(__file__).parent
 CSS_FILE = THIS_DIR / "style" / "style.css"
 ASSETS = THIS_DIR / "assets"
 
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+img = get_img_as_base64(ASSETS / "img" / "bg.png")
+
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+background-image: url("data:image/png;base64,{img}");
+background-size: cover;
+}}
+</style>
+"""
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", initial_sidebar_state="collapsed")
 
 ### Apply Custom CSS
 with open(CSS_FILE) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-#-------------------#
-#   Session State   #
-#-------------------#
-if 'setup_time' not in st.session_state:
-    st.session_state['setup_time'] = 10
-
-if 'shooting_time' not in st.session_state:
-    st.session_state['shooting_time'] = 90
-
-if 'low_time_warning' not in st.session_state:
-    st.session_state['low_time_warning'] = st.session_state['shooting_time']
-
-if 'low_time_urgent' not in st.session_state:
-    st.session_state['low_time_urgent'] = st.session_state['shooting_time']
-
-if 'use_warning_color' not in st.session_state:
-    st.session_state['use_warning_color'] = True
-
-if 'use_urgent_color' not in st.session_state:
-    st.session_state['use_urgent_color'] = True
-
-if 'num_practice_ends' not in st.session_state:
-    st.session_state['num_practice_ends'] = 2
-
-if 'num_scoring_ends' not in st.session_state:
-    st.session_state['num_scoring_ends'] = 10
-
-if 'is_double_line' not in st.session_state:
-    st.session_state['is_double_line'] = False
-
-if 'current_line' not in st.session_state:
-    st.session_state['current_line'] = 'A'
-
-if 'current_end' not in st.session_state:
-    st.session_state['current_end'] = 1
-
-if 'is_buzzer_enabled' not in st.session_state:
-    st.session_state['is_buzzer_enabled'] = True
-
-## Previous State Trackers
-if 'timer_active' not in st.session_state:
-    st.session_state['timer_active'] = False
-
-if 'last_setup_time' not in st.session_state:
-    st.session_state['last_setup_time'] = st.session_state['setup_time']
-
-if 'last_shooting_time' not in st.session_state:
-    st.session_state['last_shooting_time'] = st.session_state['shooting_time']
-
-if 'last_phase' not in st.session_state:
-    st.session_state['last_phase'] = 'SETUP'
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 #-------------------#
 #   Page Elements   #
@@ -78,38 +44,50 @@ if 'last_phase' not in st.session_state:
 
 # Display Header
 RANGE_NAME = "Unofficial Archery"
-st.header(f"Welcome to {RANGE_NAME}! 🎯", anchor=False)
+st.markdown(f"<center style='text-align: center; font-size: 3.1vmax; font-weight: 600;'>{RANGE_NAME} 🎯</center>", unsafe_allow_html=True)
 
-# About Text
-st.markdown('''
-            ### About
-            Unofficial Archery is exactly that! Your own unofficial archery range! ***Spin up a range wherever you are!*** (or rather, wherever you have an internet connection)
-            
-            *(Disclaimer: Yes, you can be an official range owner and still use this app to run your range if you want)*
-            
-            ### Features
-            - **Range Commands**
-                - **Commands**: On Line, Begin, Clear, Hold
-                - **Buzzer**: Can be enabled for audible commands *(disabled by default)*
-                - **Hotkeys**: Control the range with just a keyboard *(Keys for the range: 1 = ON LINE | 2 = BEGIN | 3 = SHOOT | 4 = HOLD)*
-            - **Scoring Timer**
-                - **Configurable**: Configure it to your liking under the "Timer Settings" page
-                - **Buzzer Cues**: The buzzer sounds twice at the beginning for setup, once to begin shooting, and three times to signal the end *(can be disabled)*
-                - **Double Line**: Enable the double line feature if your range is so popular that you don't have enough space *(disabled by default)*
-                - **Hotkeys**: Start/Stop the timer with just a keyboard *(Keys for timer: S = Start/Stop)*
-            - **Countdown**
-                - **Configurable**: Configure the time, title, and end text for whatever you need (i.e. event starting countdown, warm-up timer, etc.)
-                - **Hotkeys**: Start/Stop the timer with just a keyboard *(Keys for timer: S = Start/Stop)*
-            
-            ### Work In Progress
-            Yup, this project is still a work in progress. If you encounter bugs, don't tell me about them, my ego is fragile (lol jk, ik there are bugs).
+st.markdown(f"#")
 
-            There are still a handful of features missing that I'm working on.
-            
-            Here's the list:
-            - ~Make it 'mobile' friendly (it's a disaster rn oops lol)~
-            - ~Alternate 'A' and 'B' line for even and odd ends if double line is enabled~
-            - Add 'Practice End' functionality
-            - Add button to skip the rest of the timer and go to the next scoring phase
-            - ~Add keyboard shortcuts for range and timer controls~
-''')
+col1_1, col1_2, col1_3 = st.columns(3, gap="medium")
+
+###### Column 1
+
+col1_1.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-bottom: 1em;'>Scoring Timer</center>", unsafe_allow_html=True)
+
+if col1_1.button("Timer", use_container_width=True):
+    st.switch_page("./pages/Timer.py")
+
+if col1_1.button("Timer Settings", use_container_width=True):
+    st.switch_page("./pages/Timer_Settings.py")
+
+col1_1.divider()
+
+###### Column 2
+
+col1_2.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-bottom: 1em;'>Range Tools</center>", unsafe_allow_html=True)
+
+if col1_2.button("Range Commands", use_container_width=True):
+    st.switch_page("./pages/Range_Commands.py")
+
+if col1_2.button("Countdown", use_container_width=True):
+    st.switch_page("./pages/Countdown.py")
+
+col1_2.divider()
+
+###### Column 3
+
+col1_3.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-bottom: 1em;'>Info</center>", unsafe_allow_html=True)
+
+if col1_3.button("About", use_container_width=True):
+    st.switch_page("./pages/About.py")
+
+if col1_3.button("Useful Tips", use_container_width=True):
+    st.switch_page("./pages/Useful_Tips.py")
+
+col1_3.divider()
+
+st.markdown(f"""
+            Important: Don't use the browsers navigation buttons (forward/back/refresh) while using this tool.
+            Doing so will reset any settings you may have configured.
+            Navigate with the on screen buttons or open the navigation menu in the top left.
+            """)

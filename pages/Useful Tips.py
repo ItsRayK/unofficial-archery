@@ -15,7 +15,7 @@ CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯")
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", initial_sidebar_state="collapsed")
 
 ### Apply Custom CSS
 # with open(CSS_FILE) as f:

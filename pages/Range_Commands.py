@@ -17,7 +17,7 @@ CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide')
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide', initial_sidebar_state="collapsed")
 
 ### Apply Custom CSS
 # with open(CSS_FILE) as f:
@@ -67,7 +67,10 @@ begin_text = "<center style='text-align: center; font-size: 12vmax; color: #0cc9
 clear_text = "<center style='text-align: center; font-size: 12vmax; color: #2695d1'>CLEAR</center>"
 hold_text = "<center style='text-align: center; font-size: 12vmax; color: #c94b0c'>HOLD</center>"
 
-st.header("Range Commands")
+if st.button("🎯 Home"):
+    st.switch_page("./Unofficial_Archery_Home.py")
+
+st.header("Range Commands", anchor=False)
 
 col1_1, col1_2 = st.columns([0.75,0.25])
 

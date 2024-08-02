@@ -17,7 +17,7 @@ CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide')
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide', initial_sidebar_state="collapsed")
 
 ### Apply Custom CSS
 #with open(CSS_FILE) as f:
@@ -59,6 +59,8 @@ timer_style_default = "<center style='text-align: center; font-size: 18vmax;'>"
 
 end_center_style = "</center>"
 
+home_button_placeholder = st.empty()
+
 ## Setup Three Column Layout
 countdown_title_placeholder = st.empty()
 
@@ -66,7 +68,8 @@ countdown_title_placeholder = st.empty()
 time_placeholder = st.empty()
 
 ## Setup Next Set of Columns
-col2_1, col2_2, col2_3= st.columns(3)
+col2_1, col2_2, col2_3= st.columns([0.2, 0.6, 0.2])
+
 countdown_controls_placeholder = col2_2.empty()
 settings_popover = col2_3.empty()
 
@@ -134,7 +137,10 @@ def run_timer(last_countdown_time_sec):
         display_timer -= 1
 
         time.sleep(1)
-        
+
+if home_button_placeholder.button("🎯 Home"):
+    st.switch_page("./Unofficial_Archery_Home.py")
+
 with settings_popover.popover("Settings"):
     title_text = st.text_input("Event Text", value=st.session_state['countdown_title_text'])
     countdown_time = st.number_input("Time (seconds)", min_value=0, step=1, value=st.session_state['countdown_time'])

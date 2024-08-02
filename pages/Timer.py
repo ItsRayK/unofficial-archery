@@ -17,7 +17,7 @@ CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide')
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide', initial_sidebar_state="collapsed")
 
 ### Apply Custom CSS
 #with open(CSS_FILE) as f:
@@ -109,7 +109,16 @@ st.markdown('##') # Spacer
 
 ## Setup Next Set of Columns
 col2_1, col2_2, col2_3= st.columns(3)
+
+## Nested Columns
+
 timer_controls_placeholder = col2_2.empty()
+
+col2_2_1, col2_2_2= col2_2.columns(2)
+
+timer_settings_placeholder = col2_2_1.empty()
+advance_phase_button_placeholder = col2_2_2.empty()
+
 buzzer_audio_placeholder = col2_2.empty()
 ### End General Layout
 
@@ -305,6 +314,12 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
         time.sleep(1)
         
 
+if advance_phase_button_placeholder.button("Next Phase >>", use_container_width=True):
+    st.session_state['last_setup_time'] = 2
+    st.session_state['last_shooting_time'] = 2
+    st.session_state['timer_active'] = False
+    st.rerun()
+
 if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     if st.session_state['timer_active'] == False:
         st.session_state['timer_active'] = True
@@ -312,8 +327,13 @@ if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     else:
         st.session_state['timer_active'] = False
 
+if timer_settings_placeholder.button("🔧", use_container_width=True):
+    st.session_state['timer_active'] = False
+    st.switch_page("./pages/Timer_Settings.py")
+
 add_keyboard_shortcuts({
-    's': 'Start/Stop'
+    's': 'Start/Stop',
+    'n': 'Next Phase >>'
 })
 
 ###################### DEBUG ################
