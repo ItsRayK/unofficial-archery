@@ -65,6 +65,9 @@ if 'current_end' not in st.session_state:
 if 'is_buzzer_enabled' not in st.session_state:
     st.session_state['is_buzzer_enabled'] = True
 
+if 'skip_buzzer' not in st.session_state:
+    st.session_state['skip_buzzer'] = False
+
 ## Previous State Trackers
 if 'timer_active' not in st.session_state:
     st.session_state['timer_active'] = False
@@ -168,11 +171,15 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 
     # Reinitialize values on Start/Stop based on last known state
     if phase == 'SETUP':
-        play_buzzer(buzzer_audio_placeholder, 2)
+        if not st.session_state['skip_buzzer']:
+            play_buzzer(buzzer_audio_placeholder, 2)
+        st.session_state['skip_buzzer'] = False
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_setup_time_sec
     elif phase == 'SHOOT':
-        play_buzzer(buzzer_audio_placeholder, 1)
+        if not st.session_state['skip_buzzer']:
+            play_buzzer(buzzer_audio_placeholder, 1)
+        st.session_state['skip_buzzer'] = False
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         display_timer = last_shot_time_sec
     else:
@@ -314,10 +321,11 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
         time.sleep(1)
         
 
-if advance_phase_button_placeholder.button("Next Phase >>", use_container_width=True):
+if advance_phase_button_placeholder.button("Next Phase", use_container_width=True):
     st.session_state['last_setup_time'] = 2
     st.session_state['last_shooting_time'] = 2
     st.session_state['timer_active'] = False
+    st.session_state['skip_buzzer'] = True
     st.rerun()
 
 if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
@@ -327,7 +335,7 @@ if timer_controls_placeholder.button("Start/Stop", use_container_width=True):
     else:
         st.session_state['timer_active'] = False
 
-if timer_settings_placeholder.button("🔧", use_container_width=True):
+if timer_settings_placeholder.button("Settings", use_container_width=True):
     st.session_state['timer_active'] = False
     st.switch_page("./pages/Timer_Settings.py")
 
