@@ -14,7 +14,7 @@ CSS_FILE = THIS_DIR / ".." / "style" / "style.css"
 ASSETS = THIS_DIR / ".." / "assets"
 
 ### Page Configuration
-st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", initial_sidebar_state="collapsed", layout="wide")
 
 ### Apply Custom CSS
 with open(CSS_FILE) as f:
@@ -24,11 +24,16 @@ with open(CSS_FILE) as f:
 #   Page Elements   #
 #-------------------#
 
+if st.button("🎯 Home"):
+    st.switch_page("./Unofficial_Archery_Home.py")
+
+col1, col2, col3 = st.columns([0.2,0.6,0.2])
+
 # Display Header
-st.header(f"About 🎯", anchor=False)
+col2.header(f"About 🎯", anchor=False)
 
 # About Text
-st.markdown('''
+col2.markdown('''
             Unofficial Archery is exactly that! Your own unofficial archery range! ***Spin up a range wherever you are!*** (or rather, wherever you have an internet connection)
             
             *(Disclaimer: Yes, you can be an official range owner and still use this app to run your range if you want)*

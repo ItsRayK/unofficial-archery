@@ -79,8 +79,10 @@ if 'last_phase' not in st.session_state:
 #-------------------#
 #   Page Elements   #
 #-------------------#
+if st.button("🎯 Home"):
+    st.switch_page("./Unofficial_Archery_Home.py")
 
-st.header("Timer Settings 🔧")
+st.header("Timer Settings 🔧", anchor=False)
 
 st.markdown(f"<span style='color: #c9b30c;'>Reminder: Don't use your browser's refresh/forward/back button.</span>", unsafe_allow_html=True)
 st.markdown(f"<span style='color: #c9b30c;'>Make sure you hit 'Apply' before leaving this page.</span>", unsafe_allow_html=True)

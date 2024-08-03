@@ -81,13 +81,16 @@ col1_3.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-b
 if col1_3.button("About", use_container_width=True):
     st.switch_page("./pages/About.py")
 
-if col1_3.button("Useful Tips", use_container_width=True):
+if col1_3.button("How to Score", use_container_width=True):
+    st.switch_page("./pages/How_To_Score.py")
+
+if col1_3.button("Useful Site Tips", use_container_width=True):
     st.switch_page("./pages/Useful_Tips.py")
 
 col1_3.divider()
 
 st.markdown(f"""
-            Important: Don't use the browsers navigation buttons (forward/back/refresh) while using this tool.
+            Important: Don't use the browser's navigation buttons (forward/back/refresh) while using this tool.
             Doing so will reset any settings you may have configured.
             Navigate with the on screen buttons or open the navigation menu in the top left.
             """)
