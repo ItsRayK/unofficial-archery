@@ -45,6 +45,12 @@ if 'use_urgent_color' not in st.session_state:
 if 'num_practice_ends' not in st.session_state:
     st.session_state['num_practice_ends'] = 2
 
+if 'is_practice_end' not in st.session_state:
+    if st.session_state['num_practice_ends'] > 0:
+        st.session_state['is_practice_end'] = True
+    else:
+        st.session_state['is_practice_end'] = False
+
 if 'num_scoring_ends' not in st.session_state:
     st.session_state['num_scoring_ends'] = 10
 
@@ -52,7 +58,7 @@ if 'is_double_line' not in st.session_state:
     st.session_state['is_double_line'] = False
 
 if 'alternate_line' not in st.session_state:
-    st.session_state['alternate_line'] = False
+    st.session_state['alternate_line'] = True
 
 if 'current_line' not in st.session_state:
     st.session_state['current_line'] = 'A'
@@ -60,8 +66,14 @@ if 'current_line' not in st.session_state:
 if 'current_end' not in st.session_state:
     st.session_state['current_end'] = 1
 
+if 'current_practice_end' not in st.session_state:
+    st.session_state['current_practice_end'] = 1
+
 if 'is_buzzer_enabled' not in st.session_state:
     st.session_state['is_buzzer_enabled'] = True
+
+if 'buzzer_style' not in st.session_state:
+    st.session_state['buzzer_style'] = 'DEFAULT'
 
 ## Previous State Trackers
 if 'timer_active' not in st.session_state:
@@ -91,7 +103,7 @@ st.markdown(f"<span style='color: #c9b30c;'>Make sure you hit 'Apply' before lea
 col1, col2 = st.columns(2)
 
 ## Column 1 Elements
-num_practice_ends = col1.number_input("# Practice Ends (this currently does nothing)", min_value=0, value=st.session_state['num_practice_ends'], step=1, format="%d")
+num_practice_ends = col1.number_input("# Practice Ends", min_value=0, value=st.session_state['num_practice_ends'], step=1, format="%d")
 num_scoring_ends = col1.number_input("# Scoring Ends", min_value=0, value=st.session_state['num_scoring_ends'], step=1, format="%d")
 setup_time = col1.number_input("Setup Time (Seconds)", min_value=0, value=st.session_state['setup_time'], step=1, format="%d")
 shooting_time = col1.number_input("Shooting Time (Seconds)", min_value=0, value=st.session_state['shooting_time'], step=1, format="%d")
@@ -111,6 +123,12 @@ else:
     alternate_line = False
 
 is_buzzer_enabled = col2.checkbox("Enable Buzzer", value=st.session_state['is_buzzer_enabled'])
+
+if is_buzzer_enabled:
+    buzzer_style = col2.selectbox(
+    "Buzzer Style:",
+    ("DEFAULT", "SOFT", "HARSH")
+)
 
 col2.divider()
 
@@ -146,7 +164,7 @@ if col2_1.button("Apply", use_container_width=True):
     st.session_state['low_time_urgent'] = low_time_urgent
 
     st.session_state['is_buzzer_enabled'] = is_buzzer_enabled
-
+    st.session_state['buzzer_style'] = buzzer_style
     # Reload Page
     st.rerun()
 
@@ -156,6 +174,7 @@ if col2_2.button("Apply & Open Timer", use_container_width=True):
     st.session_state['current_line'] = 'A'
     st.session_state['last_phase'] = 'SETUP'
     st.session_state['current_end'] = 1
+    st.session_state['current_practice_end'] = 1
 
     # Save Number of Ends
     st.session_state['num_practice_ends'] = num_practice_ends
@@ -168,6 +187,8 @@ if col2_2.button("Apply & Open Timer", use_container_width=True):
     st.session_state['last_shooting_time'] = shooting_time
 
     # Save Flags
+    st.session_state['is_practice_end'] = num_practice_ends > 0
+
     st.session_state['is_double_line'] = is_double_line
     st.session_state['alternate_line'] = alternate_line
 
@@ -178,6 +199,7 @@ if col2_2.button("Apply & Open Timer", use_container_width=True):
     st.session_state['low_time_urgent'] = low_time_urgent
 
     st.session_state['is_buzzer_enabled'] = is_buzzer_enabled
+    st.session_state['buzzer_style'] = buzzer_style
 
     st.switch_page("./pages/Timer.py")
 

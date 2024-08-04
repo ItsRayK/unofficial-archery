@@ -60,7 +60,11 @@ col2.markdown('''
             Here's the list:
             - ~Make it 'mobile' friendly (it's a disaster rn oops lol)~
             - ~Alternate 'A' and 'B' line for even and odd ends if double line is enabled~
-            - Add 'Practice End' functionality
+            - ~Add 'Practice End' functionality (double lines don't alternate starting)~
             - ~Add button to skip the rest of the timer and go to the next scoring phase~
             - ~Add keyboard shortcuts for range and timer controls~
+            - Add configurable 'Make Up End' functionality
+            - Add ability to reconfigure the scoring timer to start N ends in
+            - Add 'Range Etiquette' page
+            - Rearrange home page to add learning section to include: 'How to Score', 'Range Etiquette', 'KSL Shot Cycle (maybe?)', SPT (timer)
 ''')

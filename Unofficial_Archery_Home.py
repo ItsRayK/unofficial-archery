@@ -62,6 +62,16 @@ if col1_1.button("Timer Settings", use_container_width=True):
 
 col1_1.divider()
 
+col1_1.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-bottom: 1em;'>Learn/Practice</center>", unsafe_allow_html=True)
+
+if col1_1.button("Rules & Etiquette", use_container_width=True):
+    st.switch_page("./pages/Range_Rules_and_Etiquette.py")
+
+if col1_1.button("How to Score", use_container_width=True):
+    st.switch_page("./pages/How_To_Score.py")
+
+col1_1.divider()
+
 ###### Column 2
 
 col1_2.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-bottom: 1em;'>Range Tools</center>", unsafe_allow_html=True)
@@ -80,9 +90,6 @@ col1_3.markdown(f"<center style='text-align: center; font-size: 1.5em; padding-b
 
 if col1_3.button("About", use_container_width=True):
     st.switch_page("./pages/About.py")
-
-if col1_3.button("How to Score", use_container_width=True):
-    st.switch_page("./pages/How_To_Score.py")
 
 if col1_3.button("Useful Site Tips", use_container_width=True):
     st.switch_page("./pages/Useful_Tips.py")

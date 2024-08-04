@@ -47,6 +47,9 @@ if 'use_urgent_color' not in st.session_state:
 if 'num_practice_ends' not in st.session_state:
     st.session_state['num_practice_ends'] = 2
 
+if 'is_practice_end' not in st.session_state:
+    st.session_state['is_practice_end'] = st.session_state['num_practice_ends'] > 0
+
 if 'num_scoring_ends' not in st.session_state:
     st.session_state['num_scoring_ends'] = 10
 
@@ -54,7 +57,7 @@ if 'is_double_line' not in st.session_state:
     st.session_state['is_double_line'] = False
 
 if 'alternate_line' not in st.session_state:
-    st.session_state['alternate_line'] = False
+    st.session_state['alternate_line'] = True
 
 if 'current_line' not in st.session_state:
     st.session_state['current_line'] = 'A'
@@ -62,8 +65,14 @@ if 'current_line' not in st.session_state:
 if 'current_end' not in st.session_state:
     st.session_state['current_end'] = 1
 
+if 'current_practice_end' not in st.session_state:
+    st.session_state['current_practice_end'] = 1
+
 if 'is_buzzer_enabled' not in st.session_state:
     st.session_state['is_buzzer_enabled'] = True
+
+if 'buzzer_style' not in st.session_state:
+    st.session_state['buzzer_style'] = 'DEFAULT'
 
 if 'skip_buzzer' not in st.session_state:
     st.session_state['skip_buzzer'] = False
@@ -102,7 +111,10 @@ line_placeholder = col1_1.empty()
 end_number_placeholder = col1_3.empty()
 
 line_placeholder.markdown(f"{style_small_default}Line: {st.session_state['current_line']}{end_center_style}", unsafe_allow_html=True)
-end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
+if st.session_state['is_practice_end']:
+    end_number_placeholder.markdown(f"{style_small_default}Practice: {st.session_state['current_practice_end']}/{st.session_state['num_practice_ends']}{end_center_style}", unsafe_allow_html=True)
+else:
+    end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
 
 ## Outside Of Columns
 time_placeholder = st.empty()
@@ -134,14 +146,24 @@ def clear_buzzer(element):
 
 def play_buzzer(element, num_times = 1):
     clear_buzzer(element)
-
+    time.sleep(0.05)
     if st.session_state['is_buzzer_enabled']:
+        style = ''
+        if st.session_state['buzzer_style'] == 'HARSH':
+            style = ''
+        elif st.session_state['buzzer_style'] == 'SOFT':
+            style = 'soft'
+
+        buzzer1_file_str = style + "buzzer.mp3"
+        buzzer2_file_str = style + "buzzer2.mp3"
+        buzzer3_file_str = style + "buzzer3.mp3"
+
         if num_times == 2:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer2.mp3"
+            buzzer_audio_file = ASSETS / "audio" / buzzer2_file_str
         elif num_times == 3:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer3.mp3"
+            buzzer_audio_file = ASSETS / "audio" / buzzer3_file_str
         else:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer.mp3"
+            buzzer_audio_file = ASSETS / "audio" / buzzer1_file_str
 
         with open(buzzer_audio_file, "rb") as f:
             data = f.read()
@@ -164,7 +186,7 @@ elif st.session_state['last_phase'] == 'SHOOT':
 else:
     time_placeholder.markdown(f"{timer_style_default}00:00{end_center_style}", unsafe_allow_html=True)
 
-phase_placeholder.markdown(f"{style_small_default}HOLD{end_center_style}", unsafe_allow_html=True)
+phase_placeholder.markdown(f"{style_small_default}CLEAR{end_center_style}", unsafe_allow_html=True)
 
 def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_line):
     phase = current_phase
@@ -189,7 +211,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
     while( True ):
         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
         
-        if st.session_state['alternate_line']:
+        if st.session_state['alternate_line'] and not st.session_state['is_practice_end']:
             if st.session_state['current_end'] % 2 == 1:
                 starting_line = 'A'
                 next_line = 'B'
@@ -252,7 +274,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
 
             # When the phase is complete (time == 0)
             if display_timer <= 0:
-                phase = 'HOLD'
+                phase = 'CLEAR'
                 st.session_state['last_phase'] = phase
 
                 if st.session_state['is_double_line']:
@@ -273,13 +295,16 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         play_buzzer(buzzer_audio_placeholder, 3)
 
                         phase_placeholder.markdown(f"{style_small_default}{phase}{end_center_style}", unsafe_allow_html=True)
-                        if st.session_state['alternate_line']:
+                        if st.session_state['alternate_line'] and not st.session_state['is_practice_end']:
                             current_line = next_line
                         else:
                             current_line = 'A'
                         st.session_state['current_line'] = current_line
                         
-                        st.session_state['current_end'] += 1
+                        if st.session_state['is_practice_end']:
+                            st.session_state['current_practice_end'] += 1
+                        else:
+                            st.session_state['current_end'] += 1
 
                         st.session_state['last_phase'] = 'SETUP'
 
@@ -288,7 +313,14 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                                                
                         time.sleep(5)
                         line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
-                        end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
+                        
+                        if st.session_state['current_practice_end'] > st.session_state['num_practice_ends']:
+                            st.session_state['is_practice_end'] = False
+                        
+                        if st.session_state['is_practice_end']:
+                            end_number_placeholder.markdown(f"{style_small_default}Practice: {st.session_state['current_practice_end']}/{st.session_state['num_practice_ends']}{end_center_style}", unsafe_allow_html=True)
+                        else:
+                            end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
                         
                         st.session_state['timer_active'] = False
                         st.rerun()
@@ -300,7 +332,10 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         current_line = 'A'
                         st.session_state['current_line'] = current_line
                         
-                        st.session_state['current_end'] += 1
+                        if st.session_state['is_practice_end']:
+                            st.session_state['current_practice_end'] += 1
+                        else:
+                            st.session_state['current_end'] += 1
                         
                         st.session_state['last_phase'] = 'SETUP'
 
@@ -309,8 +344,15 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                      
                         time.sleep(5)
                         line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
-                        end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
 
+                        if st.session_state['current_practice_end'] > st.session_state['num_practice_ends']:
+                            st.session_state['is_practice_end'] = False
+
+                        if st.session_state['is_practice_end']:
+                            end_number_placeholder.markdown(f"{style_small_default}Practice: {st.session_state['current_practice_end']}/{st.session_state['num_practice_ends']}{end_center_style}", unsafe_allow_html=True)
+                        else:
+                            end_number_placeholder.markdown(f"{style_small_default}End: {st.session_state['current_end']}/{st.session_state['num_scoring_ends']}{end_center_style}", unsafe_allow_html=True)
+                        
                         st.session_state['timer_active'] = False
                         st.rerun()
                         #break
@@ -341,7 +383,7 @@ if timer_settings_placeholder.button("Settings", use_container_width=True):
 
 add_keyboard_shortcuts({
     's': 'Start/Stop',
-    'n': 'Next Phase >>'
+    'n': 'Next Phase'
 })
 
 ###################### DEBUG ################
