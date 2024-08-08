@@ -68,18 +68,18 @@ if 'is_spt_audio_enabled' not in st.session_state:
 #-------------------#
 
 ## Styles/Colors
-style_small_default = "<center style='text-align: center; font-size: 4vmax;'>"
+style_small_default = "<center style='text-align: center; font-size: 3vmax;'>"
 
-timer_style_default = "<center style='text-align: center; font-size: 17vmax;'>"
-timer_style_green = "<center style='text-align: center; font-size: 17vmax; color: #0cc93f'>"
-timer_style_amber = "<center style='text-align: center; font-size: 17vmax; color: #c9b30c'>"
+timer_style_default = "<center style='text-align: center; font-size: 16vmax;'>"
+timer_style_green = "<center style='text-align: center; font-size: 16vmax; color: #0cc93f'>"
+timer_style_amber = "<center style='text-align: center; font-size: 16vmax; color: #c9b30c'>"
 
 end_center_style = "</center>"
 
-home_button_placeholder = st.empty()
-
 ## Setup Column Layout
 col1_1, col1_2, col1_3, col1_4, col1_5 = st.columns([0.2, 0.2, 0.2, 0.2, 0.2])
+
+home_button_placeholder = col1_1.empty()
 
 spt_title_placeholder = col1_2.empty()
 spt_phase_placeholder = col1_3.empty()

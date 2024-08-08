@@ -88,7 +88,7 @@ if 'last_shooting_time' not in st.session_state:
     st.session_state['last_shooting_time'] = st.session_state['shooting_time']
 
 if 'last_phase' not in st.session_state:
-    st.session_state['last_phase'] = 'SETUP'
+    st.session_state['last_phase'] = 'ON LINE'
 
 #-------------------#
 #   Page Elements   #
@@ -153,6 +153,8 @@ def play_buzzer(element, num_times = 1):
             style = ''
         elif st.session_state['buzzer_style'] == 'SOFT':
             style = 'soft'
+        else:
+            style = 'soft'
 
         buzzer1_file_str = style + "buzzer.mp3"
         buzzer2_file_str = style + "buzzer2.mp3"
@@ -179,7 +181,7 @@ def play_buzzer(element, num_times = 1):
 #-------------------#
 #     Core Logic    #
 #-------------------#
-if st.session_state['last_phase'] == 'SETUP':
+if st.session_state['last_phase'] == 'ON LINE':
     time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(st.session_state['last_setup_time']))}{end_center_style}", unsafe_allow_html=True)
 elif st.session_state['last_phase'] == 'SHOOT':
     time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(st.session_state['last_shooting_time']))}{end_center_style}", unsafe_allow_html=True)
@@ -192,7 +194,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
     phase = current_phase
 
     # Reinitialize values on Start/Stop based on last known state
-    if phase == 'SETUP':
+    if phase == 'ON LINE':
         if not st.session_state['skip_buzzer']:
             play_buzzer(buzzer_audio_placeholder, 2)
         st.session_state['skip_buzzer'] = False
@@ -222,10 +224,10 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
             starting_line = 'A'
             next_line = 'B'
 
-        # Logic if in SETUP PHASE
-        if phase == 'SETUP':
+        # Logic if in ON LINE PHASE
+        if phase == 'ON LINE':
 
-            st.session_state['last_phase'] = phase # Save/Update the last known phase (SETUP)
+            st.session_state['last_phase'] = phase # Save/Update the last known phase (ON LINE)
 
             time_placeholder.markdown(f"{timer_style_warning}{time.strftime('%M:%S', time.gmtime(display_timer))}{end_center_style}", unsafe_allow_html=True)
 
@@ -287,7 +289,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         st.session_state['current_line'] = current_line
                         line_placeholder.markdown(f"{style_small_default}Line: {current_line}{end_center_style}", unsafe_allow_html=True)
 
-                        phase = 'SETUP'
+                        phase = 'ON LINE'
                         st.session_state['last_phase'] = phase
                         display_timer = st.session_state['setup_time']
 
@@ -306,7 +308,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         else:
                             st.session_state['current_end'] += 1
 
-                        st.session_state['last_phase'] = 'SETUP'
+                        st.session_state['last_phase'] = 'ON LINE'
 
                         st.session_state['last_setup_time'] = st.session_state['setup_time']
                         st.session_state['last_shooting_time'] = st.session_state['shooting_time']
@@ -337,7 +339,7 @@ def run_timer(last_setup_time_sec, last_shot_time_sec, current_phase, current_li
                         else:
                             st.session_state['current_end'] += 1
                         
-                        st.session_state['last_phase'] = 'SETUP'
+                        st.session_state['last_phase'] = 'ON LINE'
 
                         st.session_state['last_setup_time'] = st.session_state['setup_time']
                         st.session_state['last_shooting_time'] = st.session_state['shooting_time']
