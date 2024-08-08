@@ -38,9 +38,6 @@ if 'countdown_end_text' not in st.session_state:
 if 'countdown_title_text' not in st.session_state:
     st.session_state['countdown_title_text'] = 'Countdown'
 
-if 'is_buzzer_enabled' not in st.session_state:
-    st.session_state['is_buzzer_enabled'] = True
-
 ## Previous State Trackers
 if 'countdown_active' not in st.session_state:
     st.session_state['countdown_active'] = False
@@ -78,27 +75,6 @@ settings_popover = col2_3.empty()
 #-------------------#
 #    Setup Assets   #
 #-------------------#
-
-def play_buzzer(num_times = 1):
-    if st.session_state['is_buzzer_enabled']:
-        if num_times == 2:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer2.mp3"
-        elif num_times == 3:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer3.mp3"
-        else:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer.mp3"
-
-        with open(buzzer_audio_file, "rb") as f:
-            data = f.read()
-            b64 = base64.b64encode(data).decode()
-            
-            md = f"""
-                <audio autoplay="true">
-                <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-                </audio>
-                """
-            col2_1.markdown(md, unsafe_allow_html=True)
-
 
 #-------------------#
 #     Core Logic    #

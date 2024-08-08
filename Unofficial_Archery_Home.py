@@ -70,6 +70,9 @@ if col1_1.button("Rules & Etiquette", use_container_width=True):
 if col1_1.button("How to Score", use_container_width=True):
     st.switch_page("./pages/How_To_Score.py")
 
+if col1_1.button("SPT Timer", use_container_width=True):
+    st.switch_page("./pages/SPT_Timer.py")
+
 col1_1.divider()
 
 ###### Column 2
