@@ -55,9 +55,6 @@ if 'spt_num_reps' not in st.session_state:
 if 'spt_timer_ended' not in st.session_state:
     st.session_state['spt_timer_ended'] = False
 
-if 'spt_end_text' not in st.session_state:
-    st.session_state['spt_end_text'] = '00:00'
-
 if 'spt_title_text' not in st.session_state:
     st.session_state['spt_title_text'] = 'SPT 1: Endurance'
 
@@ -175,13 +172,22 @@ if not st.session_state['spt_timer_ended']:
     else:
         spt_time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(st.session_state['last_spt_time']))}{end_center_style}", unsafe_allow_html=True)
 else:
-    spt_time_placeholder.markdown(f"{timer_style_default}{st.session_state['spt_end_text']}{end_center_style}", unsafe_allow_html=True)
+    spt_time_placeholder.markdown(f"{timer_style_default}{time.strftime('%M:%S', time.gmtime(0))}{end_center_style}", unsafe_allow_html=True)
 
 
 def run_timer(last_phase, last_countdown_time_sec):
     # Reinitialize values on Start/Stop based on last known state
     display_timer = last_countdown_time_sec
     phase = last_phase
+
+    if phase == 'END':
+        phase = 'SETUP'
+        st.session_state['last_spt_phase'] = 'SETUP'
+        st.session_state['last_spt_time'] = st.session_state['spt_setup_time']
+        st.session_state['curr_rep'] = 1
+        st.session_state['spt_timer_ended'] = False
+        display_timer = st.session_state['spt_setup_time']
+        spt_phase_placeholder.markdown(f"{style_small_default}{st.session_state['last_spt_phase']}{end_center_style}", unsafe_allow_html=True)
 
     if phase == 'SETUP':
         play_buzzer(spt_audio_placeholder, 2)
@@ -233,7 +239,7 @@ def run_timer(last_phase, last_countdown_time_sec):
             play_buzzer(spt_audio_placeholder, 3)
             st.session_state['spt_timer_ended'] = True
             spt_phase_placeholder.markdown(f"{style_small_default}{st.session_state['last_spt_phase']}{end_center_style}", unsafe_allow_html=True)
-            st.session_state['last_spt_time'] = st.session_state['spt_end_text']
+            st.session_state['last_spt_time'] = 0
             st.session_state['spt_timer_active'] = False
 
             time.sleep(3)
@@ -277,15 +283,12 @@ spt_text = col4_1.selectbox("SPT", ("SPT 1: Endurance", "SPT 2: Strength", "SPT 
 spt_reps = col4_2.number_input("Number of Reps", min_value=0, step=1, value=st.session_state['spt_num_reps'])
 spt_work_time = col4_3.number_input("Work Time (seconds)", min_value=0, step=1, value=st.session_state['spt_work_time'])
 spt_rest_time = col4_4.number_input("Rest Time (seconds)", min_value=0, step=1, value=st.session_state['spt_rest_time'])
-#end_text = st.text_input("End Display Text", value=st.session_state['spt_end_text'])
 
 if st.button("Apply", use_container_width=True):
+    st.session_state['last_spt_phase'] = 'SETUP'
     st.session_state['spt_title_text'] = spt_text
     st.session_state['spt_work_time'] = spt_work_time
     st.session_state['spt_rest_time'] = spt_rest_time
-    # if end_text.strip().lower() == '':
-    #     end_text = '00:00'
-    #st.session_state['spt_end_text'] = end_text
     st.session_state['last_spt_time'] = st.session_state['spt_setup_time']
     st.session_state['spt_num_reps'] = spt_reps
     st.session_state['curr_rep'] = 1
