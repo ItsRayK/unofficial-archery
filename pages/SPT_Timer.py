@@ -6,6 +6,7 @@ from pathlib import Path
 import streamlit as st
 from streamlit_shortcuts import add_keyboard_shortcuts
 import time
+from PIL import Image
 import base64
 
 #-------------------#
@@ -22,6 +23,19 @@ st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wi
 ### Apply Custom CSS
 #with open(CSS_FILE) as f:
 #    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load Images
+image_names = ["endurance50.png", "strength50.png", "flexibility50.png", "structure50.png"]
+images = []
+
+@st.cache_resource
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+for name in image_names:
+    images.append(get_img_as_base64(ASSETS / "img" / "spt" / name))
 
 #-------------------#
 #   Session State   #
@@ -104,6 +118,18 @@ settings_popover = col2_3.empty()
 spt_num = int(st.session_state['spt_title_text'].split(':')[0].split(' ')[1])
 spt_description = st.session_state['spt_title_text'].split(':')[1]
 
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+background-image: url("data:image/png;base64,{images[spt_num-1]}");
+background-size: contain;
+background-repeat: no-repeat;
+}}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
 def clear_buzzer(element):
     element.empty()
 
@@ -156,6 +182,9 @@ def run_timer(last_phase, last_countdown_time_sec):
     # Reinitialize values on Start/Stop based on last known state
     display_timer = last_countdown_time_sec
     phase = last_phase
+
+    if phase == 'SETUP':
+        play_buzzer(spt_audio_placeholder, 2)
 
     # Non-blocking timer loop
     while( st.session_state['spt_timer_active'] ):

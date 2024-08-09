@@ -66,5 +66,5 @@ col2.markdown('''
             - Add configurable 'Make Up End' functionality
             - Add ability to reconfigure the scoring timer to start N ends in
             - ~Add 'Range Etiquette' page~
-            - Rearrange home page to add learning section to include: 'How to Score', 'Range Etiquette', 'KSL Shot Cycle (maybe?)', SPT (timer)
+            - ~Rearrange home page to add learning section to include: 'How to Score', 'Range Etiquette', 'KSL Shot Cycle (maybe?)', SPT (timer)~
 ''')

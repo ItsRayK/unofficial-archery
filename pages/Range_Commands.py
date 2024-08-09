@@ -19,6 +19,25 @@ ASSETS = THIS_DIR / ".." / "assets"
 ### Page Configuration
 st.set_page_config(page_title="Unofficial Archery", page_icon="🎯", layout='wide', initial_sidebar_state="collapsed")
 
+@st.cache_resource
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+img = get_img_as_base64(ASSETS / "img" / "range-bg.png")
+
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+background-image: url("data:image/png;base64,{img}");
+background-size: cover;
+}}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
 ### Apply Custom CSS
 # with open(CSS_FILE) as f:
 #     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -40,11 +59,11 @@ if 'is_range_buzzer_enabled' not in st.session_state:
 def play_buzzer(num_times = 1):
     if st.session_state['is_range_buzzer_enabled']:
         if num_times == 2:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer2.mp3"
+            buzzer_audio_file = ASSETS / "audio" / "softbuzzer2.mp3"
         elif num_times == 3:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer3.mp3"
+            buzzer_audio_file = ASSETS / "audio" / "softbuzzer3.mp3"
         else:
-            buzzer_audio_file = ASSETS / "audio" / "buzzer.mp3"
+            buzzer_audio_file = ASSETS / "audio" / "softbuzzer.mp3"
 
         with open(buzzer_audio_file, "rb") as f:
             data = f.read()
