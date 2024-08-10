@@ -44,7 +44,7 @@ col2.markdown("2. __A loaded bow should only ever be pointing down range towards
 col2.markdown("3. __If you're not on line ALL of your arrows should either be in your quiver or in the target down range__.")
 col2.markdown("4. Similarly, do not walk around with arrows in your hand. Keep the arrows on you in your quiver.")
 col2.markdown("5. __No running!__ Seriously don't.")
-col2.markdown("6. __No dry firing!__ A 'dry fire' is when you load and release a bow without an arrow. All of the energy released goes straight into the limbs of the bow and can seriously injure you and damage your equipment making it unsafe until it is thouroughly inspected.")
+col2.markdown("6. __No dry firing!__ A 'dry fire' is when you load and release a bow without an arrow. All of the energy released goes straight into the limbs of the bow and can seriously injure you and damage your equipment making it unsafe until it is thoroughly inspected.")
 
 col2.divider()
 
