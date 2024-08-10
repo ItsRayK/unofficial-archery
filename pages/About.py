@@ -51,6 +51,13 @@ col2.markdown('''
             - **Countdown**
                 - **Configurable**: Configure the time, title, and end text for whatever you need (i.e. event starting countdown, warm-up timer, etc.)
                 - **Hotkeys**: Start/Stop the timer with just a keyboard *(Keys for timer: S = Start/Stop)*
+            - **SPT Timer**
+                - **Configurable**: Set it up just the way you want for your workout.
+                - **SPT Diagram**: Selecting an SPT displays a diagram to help you remember how to perform the SPT exercise correctly.
+                - **Sounds**: A chime will sound between work and rest periods, so you can focus on the exercise and not the time.
+            - **Learn**
+                - **Rules & Etiquette**: Brush up on general range rules and etiquette. But remember to follow your range's rules first.
+                - **How to Score**: Learn how to score. Not all score sheets are the same, but here is the general method.
             
             ### Work In Progress
             Yup, this project is still a work in progress. If you encounter bugs, don't tell me about them, my ego is fragile (lol jk, ik there are bugs).
