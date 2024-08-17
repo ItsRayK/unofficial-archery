@@ -41,6 +41,7 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 #-------------------#
 #   Page Elements   #
 #-------------------#
+st.write('#')
 
 # Display Header
 RANGE_NAME = "Unofficial Archery"
